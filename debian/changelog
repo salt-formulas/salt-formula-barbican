@@ -1,0 +1,5 @@
+salt-formula-barbican (2017.6) xenial; urgency=medium
+
+  * Initial release
+
+ -- Petr Jediný petr.jediny@gmail.com  Tue, 01 Aug 2017 02:16:20 BST

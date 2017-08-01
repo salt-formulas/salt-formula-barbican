@@ -1,0 +1,10 @@
+applications:
+- barbican
+classes:
+- service.barbican.support
+parameters:
+  barbican:
+    server:
+      enabled: true
+      bind:
+        address: 0.0.0.0

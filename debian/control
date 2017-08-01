@@ -1,0 +1,15 @@
+Source: salt-formula-barbican
+Maintainer: Petr Jediný petr.jediny@gmail.com
+Section: admin
+Priority: optional
+Build-Depends: debhelper (>= 9), salt-master, python, python-yaml
+Standards-Version: 3.9.6
+Homepage: https://github.com/salt-formulas
+Vcs-Browser: https://github.com/salt-formulas/salt-formula-barbican
+Vcs-Git: https://github.com/salt-formulas/salt-formula-barbican.git
+
+Package: salt-formula-barbican
+Architecture: all
+Depends: ${misc:Depends}, salt-master, reclass
+Description: barbican salt formula
+ Install and configure barbican system.
