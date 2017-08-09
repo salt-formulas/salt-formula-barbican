@@ -1,12 +1,15 @@
 {%- from "barbican/map.jinja" import server with context %}
 # Fill in documentation details
 doc:
-  name: barbican
-  description: Some service info
+  name: Barbican
+  description: |
+    Barbican is a REST API designed for the secure storage, provisioning and
+    management of secrets such as passwords, encryption keys and X.509 Certificates.
+    It is aimed at being useful for all environments, including large ephemeral
+    Clouds.
   role:
     server:
       name: server
       param:
-        some_param:
-          name: "Some name"
-          value: "some value"
+        version:
+          value: "{{ server.version }}"

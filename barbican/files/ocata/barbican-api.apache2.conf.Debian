@@ -1,0 +1,19 @@
+{%- from "barbican/map.jinja" import server with context %}
+Listen {{ server.bind.address }}:{{ server.bind.port }}
+Listen {{ server.bind.address }}:{{ server.bind.admin_port }}
+
+<VirtualHost *:{{ server.bind.port }}>
+    WSGIScriptAlias / /usr/share/barbican/app.wsgi
+    WSGIDaemonProcess barbican-api user=barbican group=barbican processes=3 threads=10
+    WSGIProcessGroup barbican-api
+    ErrorLog /var/log/barbican/barbican-api.log
+    CustomLog /var/log/barbican/barbican-api.log combined
+</VirtualHost>
+
+<VirtualHost *:{{ server.bind.admin_port }}>
+    WSGIScriptAlias / /usr/share/barbican/app.wsgi
+    WSGIDaemonProcess barbican-api-admin user=barbican group=barbican processes=3 threads=10
+    WSGIProcessGroup barbican-api-admin
+    ErrorLog /var/log/barbican/barbican-api.log
+    CustomLog /var/log/barbican/barbican-api.log combined
+</VirtualHost>
