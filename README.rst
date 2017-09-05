@@ -132,6 +132,29 @@ supports this feature.
         ks_notifications_allow_requeue: true
 
 
+MySQL server has gone away
+
+MySQL uses a default `wait_timeout` of 8 hours, after which it will drop
+idle connections. This can result in 'MySQL Gone Away' exceptions. If you
+notice this, you can lower `sql_idle_timeout` to ensure that SQLAlchemy
+reconnects before MySQL can drop the connection.
+
+.. code-block:: yaml
+
+    barbican:
+      server:
+        enabled: true
+        version: ocata
+        database:
+          engine: "mysql+pymysql"
+          host: 10.0.106.20
+          port: 3306
+          name: barbican
+          user: barbican
+          password: password
+          sql_idle_timeout: 1200
+
+
 Configuring plugins
 -------------------
 

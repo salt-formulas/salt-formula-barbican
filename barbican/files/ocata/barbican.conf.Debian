@@ -49,7 +49,7 @@ sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ se
 # idle connections. This can result in 'MySQL Gone Away' exceptions. If you
 # notice this, you can lower this value to ensure that SQLAlchemy reconnects
 # before MySQL can drop the connection.
-sql_idle_timeout = 3600
+sql_idle_timeout = {{ server.database.get('sql_idle_timeout', 3600) }}
 
 # Accepts a class imported from the sqlalchemy.pool module, and handles the
 # details of building the pool for you. If commented out, SQLAlchemy
