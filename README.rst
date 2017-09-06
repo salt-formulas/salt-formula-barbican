@@ -137,7 +137,8 @@ MySQL server has gone away
 MySQL uses a default `wait_timeout` of 8 hours, after which it will drop
 idle connections. This can result in 'MySQL Gone Away' exceptions. If you
 notice this, you can lower `sql_idle_timeout` to ensure that SQLAlchemy
-reconnects before MySQL can drop the connection.
+reconnects before MySQL can drop the connection. If you run MySQL with HAProxy
+you need to consider haproxy client/server timeout parameters.
 
 .. code-block:: yaml
 
@@ -152,7 +153,7 @@ reconnects before MySQL can drop the connection.
           name: barbican
           user: barbican
           password: password
-          sql_idle_timeout: 1200
+          sql_idle_timeout: 180
 
 
 Configuring plugins

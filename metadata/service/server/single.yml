@@ -23,7 +23,7 @@ parameters:
         name: barbican
         user: barbican
         password: ${_param:mysql_barbican_password}
-        sql_idle_timeout: 1200
+        sql_idle_timeout: 180
       identity:
         engine: keystone
         host: ${_param:single_address}
