@@ -7,7 +7,7 @@ parameters:
       plugin:
         dogtag:
           dogtag_host: ${_param:barbican_dogtag_host}
-          dogtag_port: 8433
+          dogtag_port: 8443
           nss_db_path: '/etc/barbican/alias'
           nss_db_path_ca: '/etc/barbican/alias-ca'
           nss_password: "${_param:barbican_dogtag_nss_password}"

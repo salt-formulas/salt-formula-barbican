@@ -169,7 +169,7 @@ Dogtag KRA
           dogtag:
             pem_path: '/etc/barbican/kra_admin_cert.pem'
             dogtag_host: localhost
-            dogtag_port: 8433
+            dogtag_port: 8443
             nss_db_path: '/etc/barbican/alias'
             nss_db_path_ca: '/etc/barbican/alias-ca'
             nss_password: 'password123'
@@ -251,7 +251,7 @@ Secret stores
           dogtag:
             pem_path: '/etc/barbican/kra_admin_cert.pem'
             dogtag_host: localhost
-            dogtag_port: 8433
+            dogtag_port: 8443
             nss_db_path: '/etc/barbican/alias'
             nss_db_path_ca: '/etc/barbican/alias-ca'
             nss_password: 'password123'
@@ -266,7 +266,7 @@ Secret stores
           kmip:
             store_plugin: kmip_plugin
           dogtag:
-            store_plugin: dogtag_plugin
+            store_plugin: dogtag_crypto
           pkcs11:
             store_plugin: store_crypto
             crypto_plugin: p11_crypto

@@ -14,6 +14,10 @@ Debian:
   services:
   - barbican-keystone-listener
   - barbican-worker
+  dogtag_pkgs:
+  - libnss3-tools
+  - python-nss
+  - pki-base
 {%- endload %}
 
 {%- load_yaml as client_defaults %}

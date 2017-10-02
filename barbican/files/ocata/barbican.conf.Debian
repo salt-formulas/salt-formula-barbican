@@ -263,24 +263,24 @@ thread_pool_size = 10
 # ================= Secret Store Plugin ===================
 [secretstore]
 namespace = barbican.secretstore.plugin
-enabled_secretstore_plugins = store_crypto
+#enabled_secretstore_plugins = store_crypto
 enable_multiple_secret_stores = True
 stores_lookup_suffix = {{ server.get('store', {}).keys() | join(', ') }}
 
 # ================= Crypto plugin ===================
 [crypto]
 namespace = barbican.crypto.plugin
-enabled_crypto_plugins = simple_crypto
+#enabled_crypto_plugins = simple_crypto
 
 {% for store_name, store in server.get('store', {}).iteritems() %}
 [secretstore:{{ store_name }}]
-{% if store.store_plugin is defined -%}
+{%- if store.store_plugin is defined %}
 secret_store_plugin = {{ store.store_plugin }}
 {%- endif %}
-{% if store.crypto_plugin is defined -%}
+{%- if store.crypto_plugin is defined %}
 crypto_plugin = {{ store.crypto_plugin }}
 {%- endif %}
-{% if store.global_default is defined -%}
+{%- if store.global_default is defined %}
 global_default = {{ store.global_default }}
 {%- endif %}
 {% endfor %}
