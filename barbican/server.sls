@@ -12,6 +12,16 @@ barbican_server_packages:
   - require:
     - pkg: barbican_server_packages
 
+barbican_syncdb:
+  cmd.run:
+  - name: barbican-manage db upgrade
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
+  - require:
+    - file: /etc/barbican/barbican.conf
+    - pkg: barbican_server_packages
+
 /etc/apache2/conf-enabled/barbican-api.conf:
   file.absent:
   - require:
@@ -38,13 +48,28 @@ barbican_apache_restart:
     - file: /etc/barbican/barbican.conf
     - file: /etc/apache2/sites-available/barbican-api.conf
 
-
 barbican_server_services:
   service.running:
   - names: {{ server.services }}
   - enable: true
   - watch:
     - file: /etc/barbican/barbican.conf
+
+{%- if server.get('async_queues_enable', False) %}
+barbican_async_workers_enable:
+  service.running:
+  - names:
+    - barbican-worker
+  - enable: true
+  - watch:
+    - file: /etc/barbican/barbican.conf
+{%- else %}
+barbican_async_workers_disable:
+  service.dead:
+  - names:
+    - barbican-worker
+  - enable: false
+{%- endif %}
 
 {%- if 'dogtag' in server.get('plugin', {}) %}
 barbican_dogtag_packages:
