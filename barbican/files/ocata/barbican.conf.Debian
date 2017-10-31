@@ -1,4 +1,4 @@
-{%- from "barbican/map.jinja" import server with context -%}
+{%- from "barbican/map.jinja" import server, system_cacerts_file with context -%}
 [DEFAULT]
 # Show debugging output in logs (sets DEBUG log level output)
 #debug = True
@@ -117,17 +117,29 @@ max_limit_paging = 100
 #metadata_encryption_key = <16, 24 or 32 char registry metadata key>
 
 # ================= Queue Options - oslo.messaging ==========================
+{%- set rabbit_port = server.message_queue.get('port', 5671 if server.message_queue.ssl.enabled else 5672) %}
+
 {%- if server.message_queue.members is defined %}
 transport_url = rabbit://{% for member in server.message_queue.members -%}
-                             {{ server.message_queue.user }}:{{ server.message_queue.password }}@{{ member.host }}:{{ member.get('port', 5672) }}
+                             {{ server.message_queue.user }}:{{ server.message_queue.password }}@{{ member.host }}:{{ member.get('port', rabbit_port) }}
                              {%- if not loop.last -%},{%- endif -%}
                          {%- endfor -%}
                              /{{ server.message_queue.virtual_host }}
 {%- else %}
-transport_url = rabbit://{{ server.message_queue.user }}:{{ server.message_queue.password }}@{{ server.message_queue.host }}:{{ server.message_queue.port }}/{{ server.message_queue.virtual_host }}
+transport_url = rabbit://{{ server.message_queue.user }}:{{ server.message_queue.password }}@{{ server.message_queue.host }}:{{ rabbit_port }}/{{ server.message_queue.virtual_host }}
 {%- endif %}
 
+
 [oslo_messaging_rabbit]
+{%- if server.message_queue.ssl.enabled %}
+rabbit_use_ssl=true
+kombu_ssl_ca_certs = {{ server.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+{%- if server.message_queue.ssl.version is defined %}
+kombu_ssl_version = {{ server.message_queue.ssl.version }}
+{%- elif salt['grains.get']('pythonversion') > [2,7,8] %}
+kombu_ssl_version = TLSv1_2
+{%- endif %}
+{%- endif %}
 
 # Rabbit and HA configuration:
 ## amqp_durable_queues = True
@@ -606,4 +618,3 @@ region_name = {{ server.get('region', 'RegionOne') }}
 
 # Config Section from which to load plugin specific options (string value)
 #auth_section = <None>
-
