@@ -159,7 +159,14 @@ you need to consider haproxy client/server timeout parameters.
 Configuring TLS communications
 ------------------------------
 
-**RabbitMQ**
+In order to trust remote server's certificate during establishing tls
+connection the CA cert must be provided at client side. By default
+system wide installed CA certs are used. You can change this behavior
+by specifying cacert_file and cacert params (optional).
+See examples below:
+
+
+- **RabbitMQ**
 
 .. code-block:: yaml
 
@@ -172,6 +179,18 @@ Configuring TLS communications
           cacert: cert body if the cacert_file does not exists
           cacert_file: /etc/openstack/rabbitmq-ca.pem
 
+
+- **MySQL**
+
+.. code-block:: yaml
+
+ barbican:
+   server:
+      database:
+        ssl:
+          enabled: True
+          cacert: cert body if the cacert_file does not exists
+          cacert_file: /etc/openstack/mysql-ca.pem
 
 
 Configuring plugins
