@@ -156,6 +156,24 @@ you need to consider haproxy client/server timeout parameters.
           sql_idle_timeout: 180
 
 
+Configuring TLS communications
+------------------------------
+
+**RabbitMQ**
+
+.. code-block:: yaml
+
+ barbican:
+   server:
+      message_queue:
+        port: 5671
+        ssl:
+          enabled: True
+          cacert: cert body if the cacert_file does not exists
+          cacert_file: /etc/openstack/rabbitmq-ca.pem
+
+
+
 Configuring plugins
 -------------------
 

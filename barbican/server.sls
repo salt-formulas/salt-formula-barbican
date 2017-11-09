@@ -1,6 +1,9 @@
 {%- from "barbican/map.jinja" import server with context %}
 {%- if server.enabled %}
 
+include:
+  - barbican._ssl
+
 barbican_server_packages:
   pkg.installed:
   - names: {{ server.pkgs }}
@@ -78,5 +81,6 @@ barbican_dogtag_packages:
   - watch_in:
     - service: barbican_server_services
 {%- endif %}
+
 
 {%- endif %}
