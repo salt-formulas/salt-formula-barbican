@@ -82,5 +82,4 @@ barbican_dogtag_packages:
     - service: barbican_server_services
 {%- endif %}
 
-
 {%- endif %}

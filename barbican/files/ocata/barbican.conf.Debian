@@ -40,7 +40,7 @@ max_allowed_request_size_in_bytes = 1000000
 #sql_connection = sqlite:///barbican.sqlite
 # Note: For absolute addresses, use '////' slashes after 'sqlite:'
 # Uncomment for a more global development environment
-sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}
+sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.ssl.enabled %}?ssl_ca={{ server.database.ssl.get('cacert_file', system_cacerts_file) }}{% endif %}
 db_auto_create = False
 
 # Period in seconds after which SQLAlchemy should reestablish its connection

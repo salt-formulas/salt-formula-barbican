@@ -44,3 +44,7 @@ barbican:
             V0MAVuww51/1DqirRG6Ge/3Sw44eDZID22jjCwLrDH0GSX76cDTe6Bx/WS0Wg7y/
             /86PB1o=
             -----END CERTIFICATE-----
+    database:
+      # Case #2: use defaults - system wide installed CA certs
+      ssl:
+        enabled: True
