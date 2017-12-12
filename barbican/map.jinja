@@ -1,4 +1,3 @@
-
 {%- load_yaml as server_defaults %}
 default:
   bind:
@@ -12,6 +11,8 @@ default:
   database:
     ssl:
       enabled: False
+  dogtag_admin_cert:
+    engine: noop
 Debian:
   pkgs:
   - barbican-api
@@ -32,5 +33,15 @@ Debian:
 {%- endload %}
 
 {%- set server = salt['grains.filter_by'](server_defaults, merge=salt['pillar.get']('barbican:server'), base='default') %}
+{# Dogtag cert source case #2: Cert from Mine. #}
+{%- if server.dogtag_admin_cert.engine == 'mine' %}
+{%- set dogtag_mine_admin_certs = salt['mine.get']('I@dogtag:server', 'dogtag_admin_cert', 'compound') %}
+{%- if dogtag_mine_admin_certs.get(server.dogtag_admin_cert.minion) == None %}
+{%- do server.dogtag_admin_cert.pop('key', None) %}
+{%- else %}
+{%- do server.dogtag_admin_cert.update({'key': dogtag_mine_admin_certs.get(server.dogtag_admin_cert.minion) }) %}
+{%- endif %}
+{%- endif %}
+
 {%- set client = salt['grains.filter_by'](client_defaults, merge=salt['pillar.get']('barbican:client')) %}
 {%- set system_cacerts_file = salt['grains.filter_by']({'Debian': '/etc/ssl/certs/ca-certificates.crt','RedHat': '/etc/pki/tls/certs/ca-bundle.crt'})%}

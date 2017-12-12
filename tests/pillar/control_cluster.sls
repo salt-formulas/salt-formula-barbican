@@ -4,6 +4,9 @@ barbican:
     version: ocata
     host_href: ''
     is_proxied: true
+    dogtag_admin_cert:
+      engine: manual
+      key: 'some dogtag key'
     plugin:
       simple_crypto:
         kek: "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY="

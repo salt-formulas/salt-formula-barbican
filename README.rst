@@ -214,6 +214,35 @@ Dogtag KRA
             ca_expiration_time: 1
             plugin_working_dir: '/etc/barbican/dogtag'
 
+There are few sources (engines) to define KRA admin cert:
+Engine #1: Define KRA admin cert by pillar.
+To define KRA admin cert by pillar need to define the following:
+.. code block:: yaml
+    barbican:
+      server:
+        dogtag_admin_cert:
+          engine: manual
+          key: |
+          ... key data ...
+Engine #2: Receive DogTag cert from Salt Mine.
+DogTag formula sends KRA cert to dogtag_admin_cert mine function.
+.. code block:: yaml
+    barbican:
+      server:
+        dogtag_admin_cert:
+          engine: mine
+          minion: ...name of minion which has installed DogTag..
+Engine #3: No operations.
+In case of some additional steps to install KRA certificate which
+are out of scope for the formula, the formula has 'noop' engine
+to perform no operations. If 'noop' engine is defined the formula will
+do nothing to install KRA admin cert.
+.. code block:: yaml
+    barbican:
+      server:
+        dogtag_admin_cert:
+          engine: noop
+
 KMIP HSM
 
 .. code block:: yaml

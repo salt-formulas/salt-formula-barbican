@@ -80,6 +80,18 @@ barbican_dogtag_packages:
   - names: {{ server.dogtag_pkgs }}
   - watch_in:
     - service: barbican_server_services
+
+{%- if 'dogtag' in server.get('plugin', {}) %}
+{%- if server.dogtag_admin_cert.engine != 'noop' %}
+{# For some cases dogtag_admin_cert can be undefined. It is done to rise an exception during the state below. #}
+{{ server.plugin.dogtag.get('pem_path', '/etc/barbican/kra_admin_cert.pem') }}:
+  file.managed:
+  - contents: {{ server.dogtag_admin_cert.key | yaml }}
+  - mode: 600
+  - user: barbican
+  - group: barbican
+{%- endif %}
 {%- endif %}
 
+{%- endif %}
 {%- endif %}
