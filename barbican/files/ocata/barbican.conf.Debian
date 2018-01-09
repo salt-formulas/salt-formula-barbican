@@ -1,4 +1,4 @@
-{%- from "barbican/map.jinja" import server, system_cacerts_file with context -%}
+{%- from "barbican/map.jinja" import server with context -%}
 [DEFAULT]
 # Show debugging output in logs (sets DEBUG log level output)
 #debug = True
@@ -40,7 +40,7 @@ max_allowed_request_size_in_bytes = 1000000
 #sql_connection = sqlite:///barbican.sqlite
 # Note: For absolute addresses, use '////' slashes after 'sqlite:'
 # Uncomment for a more global development environment
-sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.ssl.enabled %}?ssl_ca={{ server.database.ssl.get('cacert_file', system_cacerts_file) }}{% endif %}
+sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.ssl.enabled %}?ssl_ca={{ server.database.ssl.get('cacert_file', server.cacert_file) }}{% endif %}
 db_auto_create = False
 
 # Period in seconds after which SQLAlchemy should reestablish its connection
@@ -133,7 +133,7 @@ transport_url = rabbit://{{ server.message_queue.user }}:{{ server.message_queue
 [oslo_messaging_rabbit]
 {%- if server.message_queue.ssl.enabled %}
 rabbit_use_ssl=true
-kombu_ssl_ca_certs = {{ server.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+kombu_ssl_ca_certs = {{ server.message_queue.ssl.get('cacert_file', server.cacert_file) }}
 {%- if server.message_queue.ssl.version is defined %}
 kombu_ssl_version = {{ server.message_queue.ssl.version }}
 {%- elif salt['grains.get']('pythonversion') > [2,7,8] %}

@@ -24,6 +24,9 @@ Debian:
   - libnss3-tools
   - python-nss
   - pki-base
+  cacert_file: /etc/ssl/certs/ca-certificates.crt
+RedHat:
+  cacert_file: /etc/pki/tls/certs/ca-bundle.crt
 {%- endload %}
 
 {%- load_yaml as client_defaults %}
@@ -44,4 +47,3 @@ Debian:
 {%- endif %}
 
 {%- set client = salt['grains.filter_by'](client_defaults, merge=salt['pillar.get']('barbican:client')) %}
-{%- set system_cacerts_file = salt['grains.filter_by']({'Debian': '/etc/ssl/certs/ca-certificates.crt','RedHat': '/etc/pki/tls/certs/ca-bundle.crt'})%}

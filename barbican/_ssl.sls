@@ -1,4 +1,4 @@
-{%- from "barbican/map.jinja" import server, system_cacerts_file with context %}
+{%- from "barbican/map.jinja" import server with context %}
 
 {#
 
@@ -20,7 +20,7 @@ rabbitmq_ca_barbican_server:
     - makedirs: true
 {% else %}
   file.exists:
-    - name: {{ server.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+    - name: {{ server.message_queue.ssl.get('cacert_file', server.cacert_file) }}
 {% endif %}
     - watch_in:
       - service: barbican_server_services
@@ -39,7 +39,7 @@ mysql_ca_barbican_server:
     - makedirs: true
 {% else %}
   file.exists:
-    - name: {{ server.database.ssl.get('cacert_file', system_cacerts_file) }}
+    - name: {{ server.database.ssl.get('cacert_file', server.cacert_file) }}
 {% endif %}
     - watch_in:
       - service: barbican_server_services
