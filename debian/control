@@ -10,6 +10,6 @@ Vcs-Git: https://github.com/salt-formulas/salt-formula-barbican.git
 
 Package: salt-formula-barbican
 Architecture: all
-Depends: ${misc:Depends}, salt-master, reclass
+Depends: ${misc:Depends}
 Description: barbican salt formula
  Install and configure barbican system.
