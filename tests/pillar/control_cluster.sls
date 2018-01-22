@@ -85,3 +85,7 @@ barbican:
         port: 11211
       - host: 10.10.10.12
         port: 11211
+apache:
+  server:
+    enabled: true
+    default_mpm: event
