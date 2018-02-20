@@ -17,15 +17,20 @@ install:
   - bundle install
 
 env:
-    - PLATFORM=trevorj/salty-whales:trusty
-    - PLATFORM=trevorj/salty-whales:xenial
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=ssl
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=ssl
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=control-single
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-single
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=control-cluster
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-cluster
 
 before_script:
   - set -o pipefail
   - make test | tail
 
 script:
-  - test ! -e .kitchen.yml || bundle exec kitchen test -t tests/integration
+  - test ! -e .kitchen.yml || bundle exec kitchen converge ${SUITE} || true
+  - test ! -e .kitchen.yml || bundle exec kitchen verify ${SUITE} -t tests/integration
 
 notifications:
   webhooks:

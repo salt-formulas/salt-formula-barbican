@@ -47,6 +47,9 @@ barbican_apache_restart:
   service.running:
   - enable: true
   - name: apache2
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
   - watch:
     - file: /etc/barbican/barbican.conf
     - file: /etc/apache2/sites-available/barbican-api.conf
@@ -55,6 +58,9 @@ barbican_server_services:
   service.running:
   - names: {{ server.services }}
   - enable: true
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
   - watch:
     - file: /etc/barbican/barbican.conf
 
@@ -64,6 +70,9 @@ barbican_async_workers_enable:
   - names:
     - barbican-worker
   - enable: true
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
   - watch:
     - file: /etc/barbican/barbican.conf
 {%- else %}

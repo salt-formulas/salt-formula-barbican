@@ -30,14 +30,24 @@ verifier:
 
 
 platforms:
-  - name: <%=ENV['PLATFORM'] || 'ubuntu-xenial'%>
+  - name: <%=ENV['PLATFORM'] || 'ubuntu-xenial-2017.7'%>
     driver_config:
-      image: <%=ENV['PLATFORM'] || 'trevorj/salty-whales:xenial'%>
+      image: <%=ENV['PLATFORM'] || 'trevorj/salty-whales:xenial-2017.7'%>
       platform: ubuntu
 
 suites:
-  - name: default
-  #  provisioner:
-  #    pillars-from-files:
-  #      barbican.sls: tests/pillar/default.sls
+  - name: ssl
+    provisioner:
+      pillars-from-files:
+        barbican.sls: tests/pillar/ssl.sls
+
+  - name: control_single
+    provisioner:
+      pillars-from-files:
+        barbican.sls: tests/pillar/control_single.sls
+
+  - name: control_cluster
+    provisioner:
+      pillars-from-files:
+        barbican.sls: tests/pillar/control_cluster.sls
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125
