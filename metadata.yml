@@ -1,3 +1,6 @@
 name: "barbican"
 version: "2017.6"
 source: "https://github.com/salt-formulas/salt-formula-barbican"
+dependencies:
+  - name: apache
+    source: "https://github.com/salt-formulas/salt-formula-apache"

@@ -85,3 +85,57 @@ barbican:
         port: 11211
       - host: 10.10.10.12
         port: 11211
+apache:
+  server:
+    enabled: true
+    default_mpm: event
+    mpm:
+      prefork:
+        enabled: true
+        servers:
+          start: 5
+          spare:
+            min: 2
+            max: 10
+        max_requests: 0
+        max_clients: 20
+        limit: 20
+    site:
+      barbican:
+        enabled: false
+        available: true
+        type: wsgi
+        name: barbican
+        wsgi:
+          daemon_process: barbican-api
+          processes: 3
+          threads: 10
+          user: barbican
+          group: barbican
+          display_name: '%{GROUP}'
+          script_alias: '/ /usr/bin/barbican-wsgi-api'
+          application_group: '%{GLOBAL}'
+          authorization: 'On'
+        host:
+          address: 127.0.0.1
+          name: 127.0.0.1
+          port: 9311
+      barbican_admin:
+        enabled: false
+        available: true
+        type: wsgi
+        name: barbican_admin
+        wsgi:
+          daemon_process: barbican-api-admin
+          processes: 3
+          threads: 10
+          user: barbican
+          group: barbican
+          display_name: '%{GROUP}'
+          script_alias: '/ /usr/bin/barbican-wsgi-api'
+          application_group: '%{GLOBAL}'
+          authorization: 'On'
+        host:
+          address: 127.0.0.1
+          name: 127.0.0.1
+          port: 9312

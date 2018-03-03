@@ -14,9 +14,14 @@ provisioner:
   formula: barbican
   grains:
     noservices: True
+  dependencies:
+    - name: apache
+      repo: git
+      source: https://github.com/salt-formulas/salt-formula-apache
   state_top:
     base:
       "*":
+        - apache
         - barbican
   pillars:
     top.sls:
