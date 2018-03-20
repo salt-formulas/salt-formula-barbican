@@ -16,7 +16,11 @@ bind_port = {{ server.bind.port }}
 # blank. Blank is needed to override default config value which is
 # 'http://localhost:9311'.
 ### host_href = http://localhost:9311
-host_href = {{ server.get('host_href', '') }}
+{%- if server.host_href is defined %}
+host_href = {{ server.host_href }}
+{%- else %}
+host_href =
+{%- endif %}
 
 # Log to this file. Make sure you do not set the same log
 # file for both the API and registry servers!
@@ -471,8 +475,8 @@ project_domain_id = {{ server.identity.get('domain', 'default') }}
 project_name = {{ server.identity.tenant }}
 username = {{ server.identity.user }}
 password = {{ server.identity.password }}
-auth_uri = http://{{ server.identity.host }}:5000
-auth_url = http://{{ server.identity.host }}:35357
+auth_uri = {{ server.identity.get('protocol', 'http') }}://{{ server.identity.host }}:5000
+auth_url = {{ server.identity.get('protocol', 'http') }}://{{ server.identity.host }}:35357
 interface = {{ server.identity.get('endpoint_type', 'internal') }}
 
 {%- if server.cache is defined %}
@@ -482,6 +486,10 @@ token_cache_time = -1
 {%- endif %}
 
 region_name = {{ server.get('region', 'RegionOne') }}
+
+{%- if server.identity.get('protocol', 'http') == 'https' %}
+cafile = {{ server.identity.get('cacert_file', server.cacert_file)  }}
+{%- endif %}
 
 # Complete "public" Identity API endpoint. This endpoint should not be an
 # "admin" endpoint, as it should be accessible by all end users. Unauthenticated
