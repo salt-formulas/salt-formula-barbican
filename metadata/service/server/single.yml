@@ -5,12 +5,13 @@ classes:
 parameters:
   _param:
     keystone_barbican_endpoint_type: internalURL
+    barbican_service_protocol: 'http'
   barbican:
     server:
       enabled: true
       version: ${_param:barbican_version}
       region: ${_param:openstack_region}
-      host_href: ''
+      host_href: "${_param:barbican_service_protocol}://${_param:single_address}:9311"
       is_proxied: false
       bind:
         address: ${_param:single_address}

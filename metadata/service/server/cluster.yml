@@ -5,12 +5,14 @@ classes:
 parameters:
   _param:
     keystone_barbican_endpoint_type: internalURL
+    cluster_internal_protocol: 'http'
+    barbican_service_protocol: ${_param:cluster_internal_protocol}
   barbican:
     server:
       enabled: true
       version: ${_param:barbican_version}
       region: ${_param:openstack_region}
-      host_href: ''
+      host_href: "${_param:barbican_service_protocol}://${_param:cluster_vip_address}:9311"
       is_proxied: true
       bind:
         address: ${_param:cluster_local_address}
