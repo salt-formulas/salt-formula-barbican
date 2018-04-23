@@ -337,6 +337,30 @@ Secret stores
             store_plugin: store_crypto
             crypto_plugin: p11_crypto
 
+Creating resources in barbican
+------------------------------
+
+To create a secret with payload from file in barbican, next pillar can be used:
+
+.. code-block:: yaml
+
+  barbican:
+    client:
+      enabled: True
+      resources:
+        v1:
+          enabled: true
+          cloud_name: admin_identity:
+          secrets:
+            TestSecret:
+              type: certificate
+              algorithm: RSA
+              payload_content_type: application/octet-stream
+              payload_content_encoding: base64
+              payload_path: /tmp/test.crt
+              encodeb64_payload: true
+
+
 
 Documentation and Bugs
 ======================
