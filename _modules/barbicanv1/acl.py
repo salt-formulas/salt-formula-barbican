@@ -5,14 +5,14 @@ from barbicanv1.secrets import secret_list, RESOURCE_LIST_KEY
 @get_by_name_or_uuid(secret_list, RESOURCE_LIST_KEY)
 @send('get')
 def secret_acl_get(secret_uuid, **kwargs):
-    url = '/v1/secrets/{}/acl'.format(secret_uuid)
+    url = '/secrets/{}/acl'.format(secret_uuid)
     return url, {}
 
 
 @get_by_name_or_uuid(secret_list, RESOURCE_LIST_KEY)
 @send('put')
 def secret_acl_put(secret_uuid, **kwargs):
-    url = '/v1/secrets/{}/acl'.format(secret_uuid)
+    url = '/secrets/{}/acl'.format(secret_uuid)
     json = {
         'read': kwargs,
     }
@@ -22,7 +22,7 @@ def secret_acl_put(secret_uuid, **kwargs):
 @get_by_name_or_uuid(secret_list, RESOURCE_LIST_KEY)
 @send('patch')
 def secret_acl_patch(secret_uuid, **kwargs):
-    url = 'v1/secrets/{}/acl'.format(secret_uuid)
+    url = '/secrets/{}/acl'.format(secret_uuid)
     json = {
         'read': kwargs,
     }
@@ -32,5 +32,5 @@ def secret_acl_patch(secret_uuid, **kwargs):
 @get_by_name_or_uuid(secret_list, RESOURCE_LIST_KEY)
 @send('delete')
 def secret_acl_delete(secret_uuid, **kwargs):
-    url = 'v1/secrets/{}/acl'.format(secret_uuid)
+    url = '/secrets/{}/acl'.format(secret_uuid)
     return url, {}

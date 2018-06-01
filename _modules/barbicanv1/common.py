@@ -48,12 +48,15 @@ class MultipleResourcesFound(BarbicanException):
 
 def _get_raw_client(cloud_name):
     service_type = 'key-manager'
-    adapter = os_client_config.make_rest_client(service_type,
-                                                cloud=cloud_name)
+    config = os_client_config.OpenStackConfig()
+    cloud = config.get_one_cloud(cloud_name)
+    adapter = cloud.get_session_client(service_type)
+    adapter.version = '1'
     try:
         access_info = adapter.session.auth.get_access(adapter.session)
         endpoints = access_info.service_catalog.get_endpoints()
-    except (AttributeError, ValueError):
+    except (AttributeError, ValueError) as exc:
+        log.exception('%s' % exc)
         e = NoAuthPluginConfigured()
         log.exception('%s' % e)
         raise e

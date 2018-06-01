@@ -10,27 +10,27 @@ RESOURCE_LIST_KEY = 'secrets'
 
 @send('get')
 def secret_list(**kwargs):
-    url = '/v1/secrets?{}'.format(urlencode(kwargs))
+    url = '/secrets?{}'.format(urlencode(kwargs))
     return url, {}
 
 
 @send('post')
 def secret_create(**kwargs):
-    url = '/v1/secrets'
+    url = '/secrets'
     return url, {'json': kwargs}
 
 
 @get_by_name_or_uuid(secret_list, RESOURCE_LIST_KEY)
 @send('get')
 def secret_get_details(secret_uuid, **kwargs):
-    url = '/v1/secrets/{}'.format(secret_uuid)
+    url = '/secrets/{}'.format(secret_uuid)
     return url, {}
 
 
 @get_by_name_or_uuid(secret_list, RESOURCE_LIST_KEY)
 @send('delete')
 def secret_delete(secret_uuid, **kwargs):
-    url = '/v1/secrets/{}'.format(secret_uuid)
+    url = '/secrets/{}'.format(secret_uuid)
     return url, {}
 
 # NOTE::
@@ -41,7 +41,7 @@ def secret_delete(secret_uuid, **kwargs):
 @get_by_name_or_uuid(secret_list, RESOURCE_LIST_KEY)
 @send('put')
 def secret_payload_set(secret_uuid, payload, **kwargs):
-    url = '/v1/secrets/{}'.format(secret_uuid)
+    url = '/secrets/{}'.format(secret_uuid)
     # Work around content headers
     content_type = 'payload_content_type'
     content_encoding = 'payload_content_encoding'
@@ -57,5 +57,5 @@ def secret_payload_set(secret_uuid, payload, **kwargs):
 @get_by_name_or_uuid(secret_list, RESOURCE_LIST_KEY)
 @send('get')
 def secret_payload_get(secret_uuid, **kwargs):
-    url = '/v1/secrets/{}/payload'.format(secret_uuid)
+    url = '/secrets/{}/payload'.format(secret_uuid)
     return url, {}

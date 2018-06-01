@@ -1,0 +1,415 @@
+{%- from "barbican/map.jinja" import server with context -%}
+[DEFAULT]
+
+#
+# From barbican.common.config
+#
+
+# Role used to identify an authenticated user as administrator.
+# (string value)
+#admin_role = admin
+
+# Allow unauthenticated users to access the API with read-only
+# privileges. This only applies when using ContextMiddleware. (boolean
+# value)
+#allow_anonymous_access = false
+
+# Maximum allowed http request size against the barbican-api. (integer
+# value)
+#max_allowed_request_size_in_bytes = 15000
+max_allowed_request_size_in_bytes = 1000000
+
+# Maximum allowed secret size in bytes. (integer value)
+#max_allowed_secret_in_bytes = 10000
+max_allowed_secret_in_bytes = 10000
+
+# Host name, for use in HATEOAS-style references Note: Typically this
+# would be the load balanced endpoint that clients would use to
+# communicate back with this service. If a deployment wants to derive
+# host from wsgi request instead then make this blank. Blank is needed
+# to override default config value which is 'http://localhost:9311'
+# (string value)
+#host_href = http://localhost:9311
+{%- if server.host_href is defined %}
+host_href = {{ server.host_href }}
+{%- endif %}
+
+# SQLAlchemy connection string for the reference implementation
+# registry server. Any valid SQLAlchemy connection string is fine.
+# See:
+# http://www.sqlalchemy.org/docs/05/reference/sqlalchemy/connections.html#sqlalchemy.create_engine.
+# Note: For absolute addresses, use '////' slashes after 'sqlite:'.
+# (string value)
+#sql_connection = sqlite:///barbican.sqlite
+sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.ssl.enabled %}?ssl_ca={{ server.database.ssl.get('cacert_file', server.cacert_file) }}{% endif %}
+
+# Period in seconds after which SQLAlchemy should reestablish its
+# connection to the database. MySQL uses a default `wait_timeout` of 8
+# hours, after which it will drop idle connections. This can result in
+# 'MySQL Gone Away' exceptions. If you notice this, you can lower this
+# value to ensure that SQLAlchemy reconnects before MySQL can drop the
+# connection. (integer value)
+#sql_idle_timeout = 3600
+sql_idle_timeout = {{ server.database.get('sql_idle_timeout', 3600) }}
+
+# Maximum number of database connection retries during startup. Set to
+# -1 to specify an infinite retry count. (integer value)
+#sql_max_retries = 60
+
+# Interval between retries of opening a SQL connection. (integer
+# value)
+#sql_retry_interval = 1
+
+# Create the Barbican database on service startup. (boolean value)
+#db_auto_create = true
+db_auto_create = False
+
+# Maximum page size for the 'limit' paging URL parameter. (integer
+# value)
+#max_limit_paging = 100
+max_limit_paging = 100
+
+# Default page size for the 'limit' paging URL parameter. (integer
+# value)
+#default_limit_paging = 10
+default_limit_paging = 10
+
+# Accepts a class imported from the sqlalchemy.pool module, and
+# handles the details of building the pool for you. If commented out,
+# SQLAlchemy will select based on the database dialect. Other options
+# are QueuePool (for SQLAlchemy-managed connections) and NullPool (to
+# disabled SQLAlchemy management of connections). See
+# http://docs.sqlalchemy.org/en/latest/core/pooling.html for more
+# details (string value)
+#sql_pool_class = QueuePool
+
+# Show SQLAlchemy pool-related debugging output in logs (sets DEBUG
+# log level output) if specified. (boolean value)
+#sql_pool_logging = false
+
+# Size of pool used by SQLAlchemy. This is the largest number of
+# connections that will be kept persistently in the pool. Can be set
+# to 0 to indicate no size limit. To disable pooling, use a NullPool
+# with sql_pool_class instead. Comment out to allow SQLAlchemy to
+# select the default. (integer value)
+#sql_pool_size = 5
+
+# # The maximum overflow size of the pool used by SQLAlchemy. When the
+# number of checked-out connections reaches the size set in
+# sql_pool_size, additional connections will be returned up to this
+# limit. It follows then that the total number of simultaneous
+# connections the pool will allow is sql_pool_size +
+# sql_pool_max_overflow. Can be set to -1 to indicate no overflow
+# limit, so no limit will be placed on the total number of concurrent
+# connections. Comment out to allow SQLAlchemy to select the default.
+# (integer value)
+#sql_pool_max_overflow = 10
+
+# Enable eventlet backdoor.  Acceptable values are 0, <port>, and
+# <start>:<end>, where 0 results in listening on a random tcp port
+# number; <port> results in listening on the specified port number
+# (and not enabling backdoor if that port is in use); and
+# <start>:<end> results in listening on the smallest unused port
+# number within the specified range of port numbers.  The chosen port
+# is displayed in the service's log file. (string value)
+#backdoor_port = <None>
+
+# Enable eventlet backdoor, using the provided path as a unix socket
+# that can receive connections. This option is mutually exclusive with
+# 'backdoor_port' in that only one should be provided. If both are
+# provided then the existence of this option overrides the usage of
+# that option. (string value)
+#backdoor_socket = <None>
+
+
+{%- set _data = server.get('logging', {}) %}
+{%- include "oslo_templates/files/queens/oslo/_log.conf" %}
+
+{%- set _data = server.message_queue %}
+{%- include "oslo_templates/files/queens/oslo/messaging/_default.conf" %}
+
+#
+# From oslo.service.periodic_task
+#
+
+# Some periodic tasks can be run in a separate process. Should we run
+# them here? (boolean value)
+#run_external_periodic_tasks = true
+
+{%- include "oslo_templates/files/queens/oslo/service/_wsgi_default.conf" %}
+
+[certificate]
+
+#
+# From barbican.certificate.plugin
+#
+
+# Extension namespace to search for plugins. (string value)
+#namespace = barbican.certificate.plugin
+
+# List of certificate plugins to load. (multi valued)
+#enabled_certificate_plugins = simple_certificate
+
+
+[certificate_event]
+
+#
+# From barbican.certificate.plugin
+#
+
+# Extension namespace to search for eventing plugins. (string value)
+#namespace = barbican.certificate.event.plugin
+
+# List of certificate plugins to load. (multi valued)
+#enabled_certificate_event_plugins = simple_certificate_event
+
+
+[cors]
+{%- if server.cors is defined %}
+{%- set _data = server.cors %}
+{%- include "oslo_templates/files/queens/oslo/_cors.conf" %}
+{%- endif %}
+
+
+[crypto]
+
+#
+# From barbican.plugin.crypto
+#
+
+# Extension namespace to search for plugins. (string value)
+#namespace = barbican.crypto.plugin
+namespace = barbican.crypto.plugin
+
+# List of crypto plugins to load. (multi valued)
+#enabled_crypto_plugins = simple_crypto
+
+{% for store_name, store in server.get('store', {}).iteritems() %}
+[secretstore:{{ store_name }}]
+{%- if store.store_plugin is defined %}
+secret_store_plugin = {{ store.store_plugin }}
+{%- endif %}
+{%- if store.crypto_plugin is defined %}
+crypto_plugin = {{ store.crypto_plugin }}
+{%- endif %}
+{%- if store.global_default is defined %}
+global_default = {{ store.global_default }}
+{%- endif %}
+{% endfor %}
+
+{% for plugin_name, plugin in server.get('plugin', {}).iteritems() %}
+{%- set plugin_fragment = "barbican/files/" + server.version + "/plugin/_" + plugin_name +".conf" %}
+[{{ plugin_name }}_plugin]
+{%- include plugin_fragment %}
+{% endfor %}
+
+[keystone_authtoken]
+{%- set _data = server.identity %}
+{%- set auth_type = _data.get('auth_type', 'password') %}
+{%- include "oslo_templates/files/queens/keystonemiddleware/_auth_token.conf" %}
+{%- include "oslo_templates/files/queens/keystoneauth/_type_" + auth_type + ".conf" %}
+
+[keystone_notifications]
+
+#
+# From barbican.common.config
+#
+
+# True enables keystone notification listener  functionality. (boolean
+# value)
+#enable = false
+enable = {{ server.get('ks_notifications_enable', 'False') }}
+
+# The default exchange under which topics are scoped. May be
+# overridden by an exchange name specified in the transport_url
+# option. (string value)
+#control_exchange = openstack
+
+# Keystone notification queue topic name. This name needs to match one
+# of values mentioned in Keystone deployment's 'notification_topics'
+# configuration e.g.    notification_topics=notifications,
+# barbican_notificationsMultiple servers may listen on a topic and
+# messages will be dispatched to one of the servers in a round-robin
+# fashion. That's why Barbican service should have its own dedicated
+# notification queue so that it receives all of Keystone
+# notifications. (string value)
+#topic = notifications
+
+# True enables requeue feature in case of notification processing
+# error. Enable this only when underlying transport supports this
+# feature. (boolean value)
+#allow_requeue = false
+allow_requeue = {{ server.get('ks_notifications_allow_requeue', 'False') }}
+
+# Version of tasks invoked via notifications (string value)
+#version = 1.0
+
+# Define the number of max threads to be used for notification server
+# processing functionality. (integer value)
+#thread_pool_size = 10
+
+
+[matchmaker_redis]
+
+#
+# From oslo.messaging
+#
+
+# DEPRECATED: Host to locate redis. (string value)
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+# Reason: Replaced by [DEFAULT]/transport_url
+#host = 127.0.0.1
+
+# DEPRECATED: Use this port to connect to redis host. (port value)
+# Minimum value: 0
+# Maximum value: 65535
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+# Reason: Replaced by [DEFAULT]/transport_url
+#port = 6379
+
+# DEPRECATED: Password for Redis server (optional). (string value)
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+# Reason: Replaced by [DEFAULT]/transport_url
+#password =
+
+# DEPRECATED: List of Redis Sentinel hosts (fault tolerance mode),
+# e.g., [host:port, host1:port ... ] (list value)
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+# Reason: Replaced by [DEFAULT]/transport_url
+#sentinel_hosts =
+
+# Redis replica set name. (string value)
+#sentinel_group_name = oslo-messaging-zeromq
+
+# Time in ms to wait between connection attempts. (integer value)
+#wait_timeout = 2000
+
+# Time in ms to wait before the transaction is killed. (integer value)
+#check_timeout = 20000
+
+# Timeout in ms on blocking socket operations. (integer value)
+#socket_timeout = 10000
+
+{%- if server.message_queue is defined %}
+{%- set _data = server.message_queue %}
+{%- if _data.engine == 'rabbitmq' %}
+    {%- set messaging_engine = 'rabbit' %}
+{%- else %}
+    {%- set messaging_engine = _data.engine %}
+{%- endif %}
+[oslo_messaging_{{ messaging_engine }}]
+{%- include "oslo_templates/files/queens/oslo/messaging/_" + messaging_engine + ".conf" %}
+{%- endif %}
+
+
+[oslo_messaging_notifications]
+{%- set _data = server.get('notification', {}) %}
+{%- include "oslo_templates/files/queens/oslo/messaging/_notifications.conf" %}
+
+
+[oslo_middleware]
+{%- set _data = server %}
+{%- include "oslo_templates/files/queens/oslo/_middleware.conf" %}
+
+[oslo_policy]
+{%- if server.policy is defined %}
+{%- set _data = server.policy %}
+{%- include "oslo_templates/files/queens/oslo/_policy.conf" %}
+{%- endif %}
+
+
+[queue]
+
+#
+# From barbican.common.config
+#
+
+# True enables queuing, False invokes workers synchronously (boolean
+# value)
+#enable = false
+{% if server.async_queues_enable is defined %}
+enable = {{ server.async_queues_enable }}
+{%- endif %}
+
+# Queue namespace (string value)
+#namespace = barbican
+
+# Queue topic name (string value)
+#topic = barbican.workers
+
+# Version of tasks invoked via queue (string value)
+#version = 1.1
+
+# Server name for RPC task processing server (string value)
+#server_name = barbican.queue
+
+# Number of asynchronous worker processes (integer value)
+#asynchronous_workers = 1
+
+
+[quotas]
+
+#
+# From barbican.common.config
+#
+
+# Number of secrets allowed per project (integer value)
+#quota_secrets = -1
+
+# Number of orders allowed per project (integer value)
+#quota_orders = -1
+
+# Number of containers allowed per project (integer value)
+#quota_containers = -1
+
+# Number of consumers allowed per project (integer value)
+#quota_consumers = -1
+
+# Number of CAs allowed per project (integer value)
+#quota_cas = -1
+
+
+[retry_scheduler]
+
+#
+# From barbican.common.config
+#
+
+# Seconds (float) to wait before starting retry scheduler (floating
+# point value)
+#initial_delay_seconds = 10.0
+
+# Seconds (float) to wait between periodic schedule events (floating
+# point value)
+#periodic_interval_max_seconds = 10.0
+
+
+[secretstore]
+
+#
+# From barbican.plugin.secret_store
+#
+
+# Extension namespace to search for plugins. (string value)
+#namespace = barbican.secretstore.plugin
+
+# List of secret store plugins to load. (multi valued)
+#enabled_secretstore_plugins = store_crypto
+
+# Flag to enable multiple secret store plugin backend support. Default
+# is False (boolean value)
+#enable_multiple_secret_stores = false
+enable_multiple_secret_stores = True
+
+# List of suffix to use for looking up plugins which are supported
+# with multiple backend support. (list value)
+#stores_lookup_suffix = <None>
+stores_lookup_suffix = {{ server.get('store', {}).keys() | join(', ') }}
+
+
+[ssl]
+{%- include "oslo_templates/files/queens/oslo/service/_ssl.conf" %}
