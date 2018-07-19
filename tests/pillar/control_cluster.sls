@@ -85,6 +85,15 @@ barbican:
         port: 11211
       - host: 10.10.10.12
         port: 11211
+    logging:
+      log_appender: false
+      log_handlers:
+        watchedfile:
+          enabled: true
+        fluentd:
+          enabled: false
+        ossyslog:
+          enabled: false
 apache:
   server:
     enabled: true

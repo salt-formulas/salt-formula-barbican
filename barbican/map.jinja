@@ -13,6 +13,12 @@ default:
       enabled: False
   dogtag_admin_cert:
     engine: noop
+  logging:
+    app_name: 'barbican'
+    log_appender: false
+    log_handlers:
+      watchedfile:
+        enabled: true
 Debian:
   pkgs:
   - barbican-api

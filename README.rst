@@ -69,6 +69,34 @@ Barbican cluster service
           - host: 10.10.10.12
             port: 11211
 
+Enhanced logging with logging.conf
+----------------------------------
+
+By default logging.conf is disabled.
+
+That is possible to enable per-binary logging.conf with new variables:
+  * openstack_log_appender - set it to true to enable log_config_append for all OpenStack services;
+  * openstack_fluentd_handler_enabled - set to true to enable FluentHandler for all Openstack services.
+  * openstack_ossyslog_handler_enabled - set to true to enable OSSysLogHandler for all Openstack services.
+
+Only WatchedFileHandler, OSSysLogHandler and FluentHandler are available.
+
+Also it is possible to configure this with pillar:
+
+.. code-block:: yaml
+
+  barbican:
+    server:
+      logging:
+        log_appender: true
+        log_handlers:
+          watchedfile:
+            enabled: true
+          fluentd:
+            enabled: true
+          ossyslog:
+            enabled: true
+
 Running behind loadbalancer
 
 If you are running behind loadbalancer, set the `host_href` to load balancer's
