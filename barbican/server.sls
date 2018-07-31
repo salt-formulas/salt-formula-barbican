@@ -56,18 +56,19 @@ barbican_fluentd_logger_package:
         _data: {{ server.logging }}
     - require:
       - pkg: barbican_server_packages
+      - file: /etc/barbican/barbican.conf
 {%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
       - pkg: barbican_fluentd_logger_package
 {%- endif %}
     - watch_in:
-      - service: {{ barbican_server_services }}
+      - service: barbican_server_services
 
 /var/log/barbican/barbican.log:
   file.managed:
     - user: barbican
     - group: barbican
     - watch_in:
-      - service: {{ barbican_server_services }}
+      - service: barbican_server_services
 
 {%- endif %}
 
