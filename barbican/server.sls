@@ -60,6 +60,8 @@ barbican_fluentd_logger_package:
 {%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
       - pkg: barbican_fluentd_logger_package
 {%- endif %}
+    - require_in:
+      - cmd: barbican_syncdb
     - watch_in:
       - service: barbican_server_services
 
