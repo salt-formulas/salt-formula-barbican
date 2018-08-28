@@ -13,6 +13,8 @@ barbican_server_packages:
   file.managed:
   - source: salt://barbican/files/{{ server.version }}/barbican.conf.{{ grains.os_family }}
   - template: jinja
+  - mode: 0640
+  - group: barbican
   - require:
     - pkg: barbican_server_packages
 
@@ -47,7 +49,8 @@ barbican_fluentd_logger_package:
 
 /etc/barbican/logging.conf:
   file.managed:
-    - user: barbican
+    - mode: 0640
+    - user: root
     - group: barbican
     - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
