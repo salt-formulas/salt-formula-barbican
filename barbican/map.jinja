@@ -42,6 +42,11 @@ Debian:
 {%- endload %}
 
 {%- set server = salt['grains.filter_by'](server_defaults, merge=salt['pillar.get']('barbican:server'), base='default') %}
+
+{%- if server.cache is defined %}
+  {%- do server.pkgs.append('python-memcache') %}
+{%- endif %}
+
 {# Dogtag cert source case #2: Cert from Mine. #}
 {%- if server.dogtag_admin_cert.engine == 'mine' %}
 {%- set dogtag_mine_admin_certs = salt['mine.get']('I@dogtag:server', 'dogtag_admin_cert', 'compound') %}
