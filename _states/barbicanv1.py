@@ -64,7 +64,7 @@ def secret_present(name, cloud_name, **kwargs):
         except Exception:
             try:
                 _barbicanv1_call(
-                    'secret_payload_set', name=name, payload=kwargs['payload'],
+                    'secret_payload_set', name=name,
                     cloud_name=cloud_name, **kwargs
                 )
             except Exception as e:
