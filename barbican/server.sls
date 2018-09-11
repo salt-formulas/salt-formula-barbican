@@ -3,11 +3,14 @@
 
 include:
   - apache
-  - barbican._ssl
+  - barbican._ssl.mysql
+  - barbican._ssl.rabbitmq
 
 barbican_server_packages:
   pkg.installed:
   - names: {{ server.pkgs }}
+  - require_in:
+    - sls: barbican._ssl.mysql
 
 /etc/barbican/barbican.conf:
   file.managed:
@@ -17,6 +20,7 @@ barbican_server_packages:
   - group: barbican
   - require:
     - pkg: barbican_server_packages
+    - sls: barbican._ssl.mysql
 
 barbican_syncdb:
   cmd.run:

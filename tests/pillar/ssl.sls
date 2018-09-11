@@ -53,8 +53,30 @@ barbican:
       name: barbican
       user: barbican
       password: password
+      x509:
+        enabled: True
+        ca_file: /etc/barbican/ssl/mysql/ca-cert.pem
+        key_file: /etc/barbican/ssl/mysql/client-key.pem
+        cert_file: /etc/barbican/ssl/mysql/client-cert.pem
+        cacert: |
+          -----BEGIN CERTIFICATE-----
+          MIIFzzCCA7egAwIBAgIIe7zZ8hCvkgowDQYJKoZIhvcNAQELBQAwSjELMAkGA1UE
+          -----END CERTIFICATE-----
+        cert: |
+          -----BEGIN CERTIFICATE-----
+          MIIGSjCCBDKgAwIBAgIJAIHRPs2rZbLvMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNV
+          -----END CERTIFICATE-----
+        key: |
+          -----BEGIN RSA PRIVATE KEY-----
+          MIIJKQIBAAKCAgEAq0m4kOIITliYea07yJnlSRNY0o6NaykiteSfHGauiub4lNQJ
+          -----END RSA PRIVATE KEY-----
       ssl:
         enabled: True
+        cacert_file: /etc/barbican/ssl/mysql/ca-cert.pem
+        cacert: |
+          -----BEGIN CERTIFICATE-----
+          MIIFzzCCA7egAwIBAgIIe7zZ8hCvkgowDQYJKoZIhvcNAQELBQAwSjELMAkGA1UE
+          -----END CERTIFICATE-----
     bind:
       address: 10.0.106.20
       port: 9311

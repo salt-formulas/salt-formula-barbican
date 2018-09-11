@@ -1,4 +1,12 @@
 {%- from "barbican/map.jinja" import server with context -%}
+
+{%- set connection_x509_ssl_option = '' %}
+{%- if server.database.get('x509',{}).get('enabled',False) %}
+  {%- set connection_x509_ssl_option = '&ssl_ca=' ~ server.database.x509.ca_file ~ '&ssl_cert=' ~ server.database.x509.cert_file ~ '&ssl_key=' ~ server.database.x509.key_file %}
+{%- elif server.database.get('ssl',{}).get('enabled',False) %}
+  {%- set connection_x509_ssl_option = '&ssl_ca=' ~ server.database.ssl.get('cacert_file', server.cacert_file) %}
+{%- endif %}
+
 [DEFAULT]
 # Show debugging output in logs (sets DEBUG log level output)
 #debug = True
@@ -57,7 +65,7 @@ max_allowed_request_size_in_bytes = 1000000
 #sql_connection = sqlite:///barbican.sqlite
 # Note: For absolute addresses, use '////' slashes after 'sqlite:'
 # Uncomment for a more global development environment
-sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.ssl.enabled %}?ssl_ca={{ server.database.ssl.get('cacert_file', server.cacert_file) }}{% endif %}
+sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}?charset=utf8{{ connection_x509_ssl_option|string }}
 db_auto_create = False
 
 # Period in seconds after which SQLAlchemy should reestablish its connection

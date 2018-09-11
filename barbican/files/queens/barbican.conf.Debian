@@ -1,4 +1,12 @@
 {%- from "barbican/map.jinja" import server with context -%}
+
+{%- set connection_x509_ssl_option = '' %}
+{%- if server.database.get('x509',{}).get('enabled',False) %}
+  {%- set connection_x509_ssl_option = '&ssl_ca=' ~ server.database.x509.ca_file ~ '&ssl_cert=' ~ server.database.x509.cert_file ~ '&ssl_key=' ~ server.database.x509.key_file %}
+{%- elif server.database.get('ssl',{}).get('enabled',False) %}
+  {%- set connection_x509_ssl_option = '&ssl_ca=' ~ server.database.ssl.get('cacert_file', server.cacert_file) %}
+{%- endif %}
+
 [DEFAULT]
 
 #
@@ -41,7 +49,7 @@ host_href = {{ server.host_href }}
 # Note: For absolute addresses, use '////' slashes after 'sqlite:'.
 # (string value)
 #sql_connection = sqlite:///barbican.sqlite
-sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.ssl.enabled %}?ssl_ca={{ server.database.ssl.get('cacert_file', server.cacert_file) }}{% endif %}
+sql_connection = {{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}?charset=utf8{{ connection_x509_ssl_option|string }}
 
 # Period in seconds after which SQLAlchemy should reestablish its
 # connection to the database. MySQL uses a default `wait_timeout` of 8
