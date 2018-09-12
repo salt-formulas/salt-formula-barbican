@@ -20,9 +20,6 @@ install:
   - bundle install
 
 env:
-    - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=ssl
-    - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=control-single
-    - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=control-cluster
     - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=ssl
     - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=control-single
     - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=control-cluster
