@@ -43,6 +43,25 @@ barbican_sync_secret_stores:
     - pkg: barbican_server_packages
     - cmd: barbican_syncdb
 
+{%- for name, rule in server.get('policy', {}).items() %}
+  {%- if rule != None %}
+barbican_keystone_rule_{{ name }}_present:
+  keystone_policy.rule_present:
+  - path: /etc/barbican/policy.json
+  - name: {{ name }}
+  - rule: "{{ rule }}"
+  - require:
+    - pkg: barbican_server_packages
+  {%- else %}
+barbican_keystone_rule_{{ name }}_absent:
+  keystone_policy.rule_absent:
+  - path: /etc/barbican/policy.json
+  - name: {{ name }}
+  - require:
+    - pkg: barbican_server_packages
+  {%- endif %}
+{%- endfor %}
+
 {%- if server.logging.log_appender %}
 
 {%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
