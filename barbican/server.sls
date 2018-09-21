@@ -11,6 +11,7 @@ barbican_server_packages:
   - names: {{ server.pkgs }}
   - require_in:
     - sls: barbican._ssl.mysql
+    - sls: barbican._ssl.rabbitmq
 
 /etc/barbican/barbican.conf:
   file.managed:
@@ -21,6 +22,7 @@ barbican_server_packages:
   - require:
     - pkg: barbican_server_packages
     - sls: barbican._ssl.mysql
+    - sls: barbican._ssl.rabbitmq
 
 barbican_syncdb:
   cmd.run:
