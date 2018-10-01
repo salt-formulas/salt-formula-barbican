@@ -37,6 +37,7 @@ barbican_syncdb:
 barbican_sync_secret_stores:
   cmd.run:
   - name: barbican-manage db sync_secret_stores
+  - runas: barbican
   {%- if grains.get('noservices') or server.version in ['ocata', 'pike'] %}
   - onlyif: /bin/false
   {%- endif %}
@@ -99,6 +100,8 @@ barbican_fluentd_logger_package:
     - group: barbican
     - watch_in:
       - service: barbican_server_services
+    - require_in:
+      - cmd: barbican_sync_secret_stores
 
 {%- endif %}
 
