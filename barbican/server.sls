@@ -213,6 +213,8 @@ barbican_dogtag_packages:
   - mode: 600
   - user: barbican
   - group: barbican
+  - require_in:
+    - cmd: barbican_sync_secret_stores
 {%- endif %}
 {%- endif %}
 
