@@ -85,6 +85,10 @@ barbican:
         port: 11211
       - host: 10.10.10.12
         port: 11211
+      security:
+        enabled: true
+        strategy: ENCRYPT
+        secret_key: secret
     logging:
       log_appender: false
       log_handlers:
