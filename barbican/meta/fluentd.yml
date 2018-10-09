@@ -21,8 +21,9 @@ agent:
           barbican_api_wsgi_in_tail:
             type: tail
             path:
-              - '/var/log/apache2/barbican.access.log'
-              - '/var/log/apache2/barbican.error.log'
+              - '/var/log/barbican/barbican-api.log'
+              - '/var/log/barbican/barbican-keystone-listener.log'
+              - '/var/log/barbican/barbican-worker.log'
             tag: openstack.barbican
             pos_file: {{ positiondb }}/barbican.wsgi.pos
             parser:
