@@ -5,6 +5,7 @@ include:
   - apache
   - barbican._ssl.mysql
   - barbican._ssl.rabbitmq
+  - barbican.db.offline_sync
 
 barbican_server_packages:
   pkg.installed:
@@ -23,16 +24,8 @@ barbican_server_packages:
     - pkg: barbican_server_packages
     - sls: barbican._ssl.mysql
     - sls: barbican._ssl.rabbitmq
-
-barbican_syncdb:
-  cmd.run:
-  - name: barbican-manage db upgrade
-  {%- if grains.get('noservices') %}
-  - onlyif: /bin/false
-  {%- endif %}
-  - require:
-    - file: /etc/barbican/barbican.conf
-    - pkg: barbican_server_packages
+  - require_in:
+    - sls: barbican.db.offline_sync
 
 barbican_sync_secret_stores:
   cmd.run:
@@ -44,7 +37,7 @@ barbican_sync_secret_stores:
   - require:
     - file: /etc/barbican/barbican.conf
     - pkg: barbican_server_packages
-    - cmd: barbican_syncdb
+    - sls: barbican.db.offline_sync
 
 {%- for name, rule in server.get('policy', {}).items() %}
   {%- if rule != None %}
@@ -90,7 +83,7 @@ barbican_fluentd_logger_package:
       - pkg: barbican_fluentd_logger_package
 {%- endif %}
     - require_in:
-      - cmd: barbican_syncdb
+      - sls: barbican.db.offline_sync
     - watch_in:
       - service: barbican_server_services
 

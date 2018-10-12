@@ -1,0 +1,5 @@
+orchestration:
+  upgrade:
+    applications:
+      barbican:
+        priority: 1400
